@@ -77,6 +77,7 @@ def plot_course_data(hashtable):
         closes = [data[4] for data in stock.course_data]
         import matplotlib.pyplot as plt
         plt.plot(dates, closes)
+        plt.xticks(rotation=45, ha='right')
         plt.show()
     else:
         print("Aktie nicht gefunden.")

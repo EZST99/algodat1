@@ -1,5 +1,6 @@
 import csv
 
+
 class Stock:
     
 
@@ -29,5 +30,5 @@ def main_menu():
                 print("Ungültige Eingabe")
              
     
-if __name__ == "__main__":
+if _name_ == "_main_":
     main_menu()

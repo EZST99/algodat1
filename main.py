@@ -3,7 +3,7 @@ import pandas as pd
 
 class HashTable:
     def __init__(self):
-        self.MAX = 100  # Maximale Anzahl an Aktien
+        self.MAX = 1301  # Maximale Anzahl an Aktien, Primzahl, damit die Verteilung der Aktien in der Hashtabelle gleichmäßiger ist
         self.arr = [[] for i in range(self.MAX)]  # Leere Liste mit 100 Elementen erstellen
 
     def get_hash(self, key): 
@@ -53,11 +53,17 @@ def import_stock_data(filename):
     course_data = []
     with open(filename, 'r') as file:
         reader = csv.DictReader(file)
+        count = 0  # Zähler für importierte Kurswerte
         for row in reader:
-            course_data.append((row['Date'], float(row['Open']), float(row['High']), 
-                                float(row['Low']), float(row['Close']), int(row['Volume']), 
-                                float(row['Adj Close'])))
+            if count < 30:  # Maximal 30 Kurswerte importieren
+                course_data.append((row['Date'], float(row['Open']), float(row['High']), 
+                                    float(row['Low']), float(row['Close']), int(row['Volume']), 
+                                    float(row['Adj Close'])))
+                count += 1
+            else:
+                break
     return course_data
+
 
 def add_stock(hashtable):
     # Neue Aktie hinzufügen
@@ -76,9 +82,9 @@ def delete_stock(hashtable):
 def search_stock(hashtable):
     # Nach einer Aktie in der Hashtabelle suchen
     symbol = input("Symbol der Aktie zum Suchen: ")
-    stock = hashtable[symbol]
+    stock = hashtable[symbol] # Aktie mit dem Symbol als Schlüssel wird aus der Hashtabelle gesucht
     if stock:
-        print(f"Aktie gefunden: {stock.name}, {stock.wkn}, {stock.symbol}")
+        print(f"Aktie gefunden: {stock.name}, {stock.wkn}, {stock.symbol}") 
     else:
         print("Aktie nicht gefunden.")
 

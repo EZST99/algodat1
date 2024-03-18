@@ -3,7 +3,7 @@ import pandas as pd
 
 class HashTable:
     # Hashtabelle für die Speicherung von Aktien
-    def _init_(self):
+    def __init__(self):
         self.MAX = 1301  # Maximale Anzahl an Aktien, Primzahl, damit die Verteilung der Aktien in der Hashtabelle gleichmäßiger ist
         self.arr = [None for i in range(self.MAX)]  # Leere Liste mit 100 Elementen erstellen
 
@@ -16,7 +16,7 @@ class HashTable:
         return h % self.MAX  # Modulo, um den Index im Array zu erhalten
 
     # Methode für das Einfügen von Werten in die Hashtabelle
-    def _setitem_(self, key, value):
+    def __setitem__(self, key, value):
         h = self.get_hash(key) # Hash-Wert für den Schlüssel berechnen
         if self.arr[h] is None: # Falls leer wird es direkt hinzugefügt
             self.arr[h] = [(key, value)] 
@@ -35,7 +35,7 @@ class HashTable:
                     break
            
     # Methode zum Abrufen von Werten aus der Hashtabelle     
-    def _getitem_(self, key):
+    def __getitem__(self, key):
         h = self.get_hash(key)
         j = 0  
         while j <= self.MAX:  # Fortsetzen, bis self.MAX Versuche erreicht sind
@@ -50,7 +50,7 @@ class HashTable:
         return None  # Nicht gefunden nach Durchlaufen aller Slots
 
     # Methode zum Löschen von Werten aus der Hashtabelle
-    def _delitem_(self, key):
+    def __delitem__(self, key):
         h = self.get_hash(key)
         j = 0  
         while j <= self.MAX: # Fortsetzen, bis self.MAX Versuche erreicht sind
@@ -65,29 +65,28 @@ class HashTable:
 
 # Klasse für die Aktie          
 class Stock:
-    def _init_(self, name, wkn, symbol, course_data=[]): 
+    def __init__(self, name, wkn, symbol, course_data=[]): 
         self.name = name
         self.wkn = wkn
         self.symbol = symbol
         self.course_data = course_data
-
-    def add_course_data(self, data):
+'''
+    def add_course_data(self, data):1
         self.course_data.append(data)  # Kursdaten hinzufügen
-
+'''
 # Funktion zum Importieren von Kursdaten aus einer CSV-Datei
 def import_stock_data(filename):
-    course_data = [] 
-    with open(filename, 'r') as file: # CSV-Datei öffnen
+    course_data = []
+    with open(filename, 'r') as file:
         reader = csv.DictReader(file) # CSV-Datei als Dictionary lesen
-        count = 0  # Zähler für importierte Kurswerte
-        for row in reader: 
-            if count < 30:  # Maximal 30 Kurswerte importieren
-                course_data.append((row['Date'], float(row['Open']), float(row['High']), 
-                                    float(row['Low']), float(row['Close']), int(row['Volume']), 
-                                    float(row['Adj Close'])))
-                count += 1
-            else:
-                break
+        rows = list(reader)  # Konvertiere den Iterator in eine Liste, um die Länge zu erhalten
+        total_rows = len(rows)
+        # Nimm die letzten 30 Zeilen
+        for i in range(max(0, total_rows - 30), total_rows):  
+            row = rows[i]
+            course_data.append((row['Date'], float(row['Open']), float(row['High']),
+                                float(row['Low']), float(row['Close']), int(row['Volume']),
+                                float(row['Adj Close'])))
     return course_data
 
 # Funktion um Stocks hinzu zu fügen
@@ -144,7 +143,7 @@ def save_stock(hashtable):
                 data.append({'Name': value.name, 'WKN': value.wkn, 'Symbol': value.symbol, 'StockData': stock_data_formatted})
     df = pd.DataFrame(data) # Daten in ein DataFrame umwandeln
     df.to_csv(f'{doc_name}.csv', index=False) # DataFrame in eine CSV-Datei speichern
-    print("Daten als {doc_name}.csv gespeichert.")  
+    print(f"Daten als {doc_name}.csv gespeichert.")  
 
 def load_stock(hashtable):
     filename = input("Dateiname zum Laden: ")
